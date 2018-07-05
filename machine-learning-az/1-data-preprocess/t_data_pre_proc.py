@@ -7,7 +7,7 @@ Created on Sun Jul  1 18:24:35 2018
 
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 #Importing the dataet
 dataset = pd.read_csv('Data.csv')
