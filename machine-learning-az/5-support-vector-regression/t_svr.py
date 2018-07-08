@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Regression Template
+Regression - svr
 
 @author: tapiw
 """
-
 
 import numpy as np
 import pandas as pd
@@ -16,7 +15,7 @@ dataset = pd.read_csv('Position_Salaries.csv')
 
 #X = dataset.iloc[:, :-1].values
 X = dataset.iloc[:, 1:2].values
-y = dataset.iloc[:, 2].values
+y = dataset.iloc[:, 2:3].values
 
 # =========================
 # >>>> NOT ENOUGH DATA TO SPLIT INTO TRAINING SET AND TESTING SET
@@ -28,41 +27,41 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 
 # =========================
 # Feature scaling
-"""
 from sklearn.preprocessing import StandardScaler
 sc_X = StandardScaler()
-X_train = sc_X.fit_transform(X_train)
-X_test = sc_X.transform(X_test)
-"""
+sc_y = StandardScaler()
+X = sc_X.fit_transform(X)
+y = sc_y.fit_transform(y)
 
 # =========================
 # Model/Fitting regression model 
-
-# regressor =
+from sklearn.svm import SVR
+#regressor = SVR(kernel='rbf', degree=6, C=2**5)
+regressor = SVR(kernel='rbf')
+regressor.fit(X, y)
 
 # =========================
 # Predict a new result with regression
 
-y_pred = regressor.predict(6.5)
+y_pred = regressor.predict(sc_X.transform(np.array([[6.5]])))
+sc_y.inverse_transform(y_pred)
 
 # =========================
 # Visualize the training set results
 
 plt.scatter(X, y, color = 'red')
 plt.plot(X, regressor.predict(X), color='blue' )
+# plt.plot(X, y_pred, color='blue' )
 plt.title('Truth or Bluff (Regression Model)')
 plt.xlabel('Job Level')
 plt.ylabel('Salary')
 plt.show()
 
-# =========================
-# Visualize the training set results -> Higher resolution
-X_grid = np.arange(min(X), max(X), 0.1)
-X_grid = X_grid.reshape(len(X_grid), 1)
- 
-plt.scatter(X, y, color = 'red')
-plt.plot(X, regressor.predict(X_grid), color='blue' )
-plt.title('Truth or Bluff (Regression Model)')
+plt.scatter(sc_X.inverse_transform(X), sc_y.inverse_transform(y), color = 'red')
+plt.plot(sc_X.inverse_transform(X), sc_y.inverse_transform(regressor.predict(X)), color='blue' )
+# plt.plot(X, y_pred, color='blue' )
+plt.title('Truth or Bluff (SVR Scaled Model)')
 plt.xlabel('Job Level')
 plt.ylabel('Salary')
 plt.show()
+
